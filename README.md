@@ -30,6 +30,11 @@ Enter
 python -c "import pus; pus.test()"
 ```
 
+## Acknowledgment
+
+This package is mostly a wrapper around the [pur](https://github.com/alanhamlett/pip-update-requirements) package.
+Many thanks to its contributors!
+
 ## Authors
 
 * [Danilo Horta](https://github.com/horta)
