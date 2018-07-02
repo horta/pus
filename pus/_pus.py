@@ -24,7 +24,9 @@ def update_requirements(req):
         output_file = os.path.join(folder, "requirements-output.txt")
         with open(input_file, "w") as f:
             f.write(req)
-        pur.update_requirements(input_file=input_file, output_file=output_file)
+        pur.update_requirements(
+            input_file=input_file, output_file=output_file, echo=True
+        )
         with open(output_file, "r") as f:
             data_output = f.read().strip()
 
