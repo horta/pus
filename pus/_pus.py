@@ -1,4 +1,5 @@
 import configparser
+import click
 import pur
 import os
 from ._folder import TmpDir
@@ -69,3 +70,9 @@ def update_setupcfg():
             req_map[s] = update_requirements(config["options"][s])
 
     _update_setupcfg("setup.cfg", req_map, sections)
+
+
+@click.command()
+@click.argument("filepath")
+def entry():
+    pass
