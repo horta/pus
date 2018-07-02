@@ -1,5 +1,6 @@
 import configparser
 import click
+import sys
 import pur
 import os
 from ._folder import TmpDir
@@ -52,16 +53,18 @@ def _update_setupcfg(filepath, req_map, sections):
     with open(filepath, "w") as f:
         f.write("".join(setupcfg))
 
+    return 0
 
-def update_setupcfg():
+
+def update_setupcfg(filepath):
     sections = ["install_requires", "setup_requires", "tests_require"]
 
     config = configparser.ConfigParser()
-    config.read("setup.cfg")
+    config.read(filepath)
 
     if "options" not in config.sections():
         print("Could not find the options section.")
-        return
+        return 1
 
     req_map = dict()
 
@@ -69,10 +72,15 @@ def update_setupcfg():
         if s in config["options"]:
             req_map[s] = update_requirements(config["options"][s])
 
-    _update_setupcfg("setup.cfg", req_map, sections)
+    return _update_setupcfg("setup.cfg", req_map, sections)
 
 
 @click.command()
 @click.argument("filepath")
-def entry():
-    pass
+@click.version_option()
+def entry(filepath):
+    if not os.path.exists(filepath):
+        print("{} does not exist.".format(filepath))
+        sys.exit(1)
+
+    sys.exit(update_setupcfg(filepath))
