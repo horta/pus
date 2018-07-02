@@ -1,5 +1,4 @@
 import configparser
-import sys
 import pur
 import os
 from ._folder import TmpDir
@@ -34,22 +33,7 @@ def update_requirements(req):
     return data
 
 
-sections = ["install_requires", "setup_requires", "tests_require"]
-
-config = configparser.ConfigParser()
-config.read("setup.cfg")
-
-if "options" not in config.sections():
-    sys.exit(0)
-
-req_map = dict()
-
-for s in sections:
-    if s in config["options"]:
-        req_map[s] = update_requirements(config["options"][s])
-
-
-def update_setupcfg(filepath, req_map, sections):
+def _update_setupcfg(filepath, req_map, sections):
     setupcfg = []
     state = "unknown"
     with open(filepath, "r") as f:
@@ -68,27 +52,20 @@ def update_setupcfg(filepath, req_map, sections):
         f.write("".join(setupcfg))
 
 
-update_setupcfg("setup.cfg", req_map, sections)
+def update_setupcfg():
+    sections = ["install_requires", "setup_requires", "tests_require"]
 
+    config = configparser.ConfigParser()
+    config.read("setup.cfg")
 
-# def parse_requirements(req):
-#     pass
+    if "options" not in config.sections():
+        print("Could not find the options section.")
+        return
 
+    req_map = dict()
 
-# config.sections()
-# config['options']['setup_requires']
-# config['options']['install_requires']
-# '\nbrent-search>=1.0.31\nndarray-listener>=1.1.0\nnumpy>=1.14.0\npandas>=0.22\npytest>=3.2.5\nscipy>=1.0.0\ntqdm>=4.19.5'
+    for s in sections:
+        if s in config["options"]:
+            req_map[s] = update_requirements(config["options"][s])
 
-# update_requirements(
-#     input_file=options['requirement'],
-#     output_file=options['output'],
-#     force=options['force'],
-#     interactive=options['interactive'],
-#     skip=options['skip'],
-#     only=options['only'],
-#     dry_run=options['dry_run'],
-#     no_recursive=options['no_recursive'],
-#     echo=options['echo'],
-# )
-
+    _update_setupcfg("setup.cfg", req_map, sections)
